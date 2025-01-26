@@ -34,6 +34,7 @@ pipeline {
             }
             steps{
                 sh '''
+                npm install --package-lock-only
                 npm ci
                 npm run build
                 grep learn-jenkins-app/build/index.html
