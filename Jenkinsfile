@@ -32,7 +32,9 @@ pipeline {
                 }
             }
             steps{
-                sh '''npm run build
+                sh '''
+                npm start
+                npm run build
                 grep learn-jenkins-app/build/index.html
                 '''
 
