@@ -29,11 +29,12 @@ pipeline {
             agent{
                 docker{
                 image 'node:18-alpine'
+                reuseNode true
                 }
             }
             steps{
                 sh '''
-                npm start
+                npm ci
                 npm run build
                 grep learn-jenkins-app/build/index.html
                 '''
