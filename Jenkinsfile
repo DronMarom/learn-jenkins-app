@@ -3,7 +3,9 @@ pipeline {
     environment{
         MY_NEW_FILE='roni_file.txt'
     }
-
+    parameters {
+        string(name: 'MY_NEW_FILE', defaultValue: 'roni_file.txt', description: 'Name of the file to create')
+    }
     stages {
         stage('Hello') {
             steps {
