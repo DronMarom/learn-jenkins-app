@@ -1,52 +1,40 @@
 pipeline {
     agent any
-    environment{
-        MY_NEW_FILE='roni_file.txt'
-    }
-    parameters {
-        string(name: 'MY_NEW_FILE', defaultValue: 'roni_file.txt', description: 'Name of the file to create')
-    }
+
     stages {
-        stage('Hello') {
-            steps {
-                cleanWs()
-                sh 'echo "Hello World" '
-                sh 'mkdir -p doron_test'
-                sh 'echo Hello World > doron_test/$MY_NEW_FILE'
-                sh 'cat doron_test/$MY_NEW_FILE'
-            }
-        }
-        stage('Test'){
-            steps{
-                echo 'Test my code'
-                sh '''
-                test -f doron_test/$MY_NEW_FILE
-                grep "Hello World" doron_test/$MY_NEW_FILE
-                '''
-            }
-        }
-        stage('Add docker'){
-            agent{
-                docker{
-                image 'node:23.6.1-alpine3.20'
-                reuseNode true
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
                 }
             }
-            steps{
+            steps {
                 sh '''
-                npm install --package-lock-only
-                npm ci
-                npm run build
-                grep learn-jenkins-app/build/index.html
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run build
+                    ls -la
                 '''
-
             }
         }
-    }
-    post {
-        success{
-            archiveArtifacts artifacts: 'doron_test/**'
-        }
 
+        stage('Test') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+
+            steps {
+                sh '''
+                    test -f build/index.html
+                    npm test
+                '''
+            }
+        }
     }
 }
