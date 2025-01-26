@@ -34,7 +34,6 @@ pipeline {
             }
             steps{
                 sh '''
-                npm install
                 npm ci
                 npm run build
                 grep learn-jenkins-app/build/index.html
